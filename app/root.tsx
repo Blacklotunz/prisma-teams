@@ -16,8 +16,8 @@ import {
 import { useEffect } from "react";
 
 import appStylesHref from "./app.css";
-import { createEmptyContact, getContacts, getRootLevel, getTeams } from "./data/data";
-import TreeItem from "./routes/teams.$teamId";
+import { createEmptyContact, getChildrenRecursive, getContacts, getRootLevel } from "./data/data";
+import TeamItem from "./routes/teams.$teamId";
 
 export const action = async () => {
   const contact = await createEmptyContact();
@@ -82,15 +82,12 @@ export default function App() {
               />
               <div aria-hidden hidden={!searching} id="search-spinner" />
             </Form>
-            {/* <Form method="post">
-              <button type="submit">New</button>
-            </Form> */}
           </div>
           <nav>
             {teams.length ? (
               <ul>
                 {teams.map((team) =>
-                  <TreeItem key={team.id} team={team}/>
+                  <TeamItem key={team.id} team={team}/>
                 )}
               </ul>
             ) : (

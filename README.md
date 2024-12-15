@@ -1,46 +1,29 @@
-## Development
+## Setup
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Node.js](https://nodejs.org/en/download/)
+- [npm](https://www.npmjs.com/get-npm)
 
 ### Install dependencies
-
+From the root folder install the node dependencies
 ```sh
 npm i
 ```
 
 ### Build and start the database
-
 ```sh
-docker build . -t prisma_teams_db && docker run -p 5432:5432 prisma_teams_db
+npm run build-db && npm run start-db
+```
+Make sure the database is running before starting the app
+```sh
+docker container ls
 ```
 
-### Start the app
-
+### Build and start the app
 ```sh
-npm run dev
+npm run build-app && npm run start-app-dev
 ```
 
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
+The command will print the url of the app in the console

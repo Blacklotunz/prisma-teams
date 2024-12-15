@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 
 import { getChildren, getTeamMembers } from "../data/data";
 import { Team } from "~/data/models/team";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface TreeItemProps {
   team: Team;
@@ -26,7 +26,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 };
 
 
-export default function TreeItem({ team }: TreeItemProps) {
+export default function TeamItem({ team }: TreeItemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const fetcher = useFetcher<{ childTeams: Team[] }>();
   const isLoading = fetcher.state === "loading";
@@ -53,6 +53,11 @@ export default function TreeItem({ team }: TreeItemProps) {
         >
           {team.name ? team.name : <i>No Name</i>}
         </NavLink>
+        <div className="tree-item-actions">
+          <NavLink to={`/teams/${team.id}/edit`} aria-label="Edit Team">
+            ✏️
+          </NavLink>
+        </div>
       </div>
       {isOpen && (
         <ul className="inner-tree">
@@ -60,10 +65,10 @@ export default function TreeItem({ team }: TreeItemProps) {
             <li>Loading...</li>
           ) : childTeams.length > 0 ? (
             childTeams.map(childTeam => (
-              <TreeItem key={childTeam.id} team={childTeam} />
+              <TeamItem key={childTeam.id} team={childTeam} />
             ))
           ) : (
-            <li>No children</li>
+            <li>No teams</li>
           )}
         </ul>
       )}
