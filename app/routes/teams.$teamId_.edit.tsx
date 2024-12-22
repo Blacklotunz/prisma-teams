@@ -1,10 +1,35 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { json } from "@remix-run/node";
-import { Form, NavLink, useFetcher, useLoaderData } from "@remix-run/react";
-import { getTeamByID, getChildrenRecursive, getMembers, updateTeam, getRootLevel, getPossibleParents } from "~/data/data";
-import { mergeFormDataForTeamUpdate as toTeamUpdate } from "~/data/models/team";
+import { isRouteErrorResponse, NavLink, useFetcher, useLoaderData, useRouteError } from "@remix-run/react";
+import { getTeamByID, getChildrenRecursive, getMembers, updateTeam, getRootLevel, getPossibleParents, updateTeamRelation } from "~/data/data";
+import { isRootTeam, mergeFormDataForTeamUpdate as toTeamUpdate } from "~/data/models/team";
 import { useEffect, useRef, useState } from "react";
+import { isString } from "~/data/models/typeguards";
+
+export function ErrorBoundary() {
+    const error = useRouteError();
+  
+    if (isRouteErrorResponse(error)) {
+      return (
+        <div>
+          <h1>
+            {error.status} {error.statusText}
+          </h1>
+          <p>ROUTE: {error.data}</p>
+        </div>
+      );
+    } else if (error instanceof Error) {
+      return (
+        <div>
+          <h1>Error</h1>
+          <p>Whoops! this is nasty</p>
+        </div>
+      );
+    } else {
+      return <h1>Unknown Error</h1>;
+    }
+  }
 
 export async function loader({ params }: LoaderFunctionArgs) {
     invariant(params.teamId, "Missing teamId param");
@@ -18,8 +43,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
     const formData = await request.formData();
     const teamUpdate = toTeamUpdate(formData);
-    const success = await updateTeam(teamUpdate);
-    return json({ success });
+    // update teams could be done in parallel
+    const success1 = await updateTeam(teamUpdate);
+    let success2 = false;
+    if(isString(teamUpdate.parent_id)){
+      success2 = await updateTeamRelation(teamUpdate.id, teamUpdate.parent_id);
+    }
+    return json({ success: (success1 && success2) });
 }
 
 export default function EditTeam() {
@@ -77,7 +107,7 @@ export default function EditTeam() {
                             {
                               members.map((member) => (
                                 member.id !== team.manager_id &&
-                                <option key={member.id} value={member.id}>{member.first_name+' '+member.last_name}</option>
+                                <option key={member.id} value={!!member.id ? member.id : ""}>{member.first_name+' '+member.last_name}</option>
                               ))
                             }
                         </select>
@@ -90,9 +120,9 @@ export default function EditTeam() {
                             setTeamParentName(p?.name ? p?.name : "Root");
                             team.parent_id = e.target.value;
                         }}>
-                            {teamParentID !== "root" && teamParentName ? 
+                            {!isRootTeam({id: teamParentID}) && teamParentName ? 
                                 <option value={teamParentID}>{teamParentName}</option> : 
-                                <option value="root">Placeholder</option>}
+                                <option value="root">No-Team</option>}
                             {
                                 possibleParents?.map((team) => 
                                     team.id !== teamParentID &&
@@ -111,7 +141,10 @@ export default function EditTeam() {
                                 }
                         }>💾 Save</button>
                     <div>
-                        <h2>Managed teams:</h2>
+                        <br />
+                        <p>
+                            {team.children?.length} teams report to {team.name}:
+                        </p>
                         <ul>
                             {team.children?.map((child) => (
                                 <li key={child.id}>

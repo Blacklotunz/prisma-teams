@@ -27,3 +27,9 @@ export function mergeFormDataForTeamUpdate(fd: FormData): UpdateTeam {
 
     return teamData;
 }
+
+export function isRootTeam(team : Partial<Team>){
+    if(!!team.id && team.id === "00000000-0000-0000-0000-000000000000") return true;
+    if(!!team.name && (team.name as string).toLowerCase() === "root") return true;
+    return false;
+}

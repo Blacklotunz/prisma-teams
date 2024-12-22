@@ -1,12 +1,12 @@
 
 -- Populate Members
 INSERT INTO members (id, email, first_name, last_name, is_active, avatar) VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'sarah.smith@company.com', 'Sarah', 'Smith', true, 'https://pbs.twimg.com/profile_images/1519035304300142593/iSpAIRl5.jpg'),
-    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'john.doe@company.com', 'John', 'Doe', true, 'https://sessionize.com/image/1940-400o400o2-Enh9dnYmrLYhJSTTPSw3MH.jpg'),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'maria.garcia@company.com', 'Maria', 'Garcia', true, 'https://pbs.twimg.com/profile_images/1740467420446306304/siQCwyja.jpg'),
-    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'alex.wong@company.com', 'Alex', 'Wong', true, 'https://pbs.twimg.com/profile_images/1546561169187639298/xgTd-oSi.jpg'),
-    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'lisa.johnson@company.com', 'Lisa', 'Johnson', true, 'https://pbs.twimg.com/profile_images/1380383475904126977/cPv2s0za.jpg'),
-    ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'james.wilson@company.com', 'James', 'Wilson', false, 'https://pbs.twimg.com/profile_images/1498636819017179142/wp1nie3S.jpg');
+    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'sarah.smith@company.com', 'Sarah', 'Smith', true, 'https://via.placeholder.com/150'),
+    ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'john.doe@company.com', 'John', 'Doe', true, 'https://via.placeholder.com/150'),
+    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'maria.garcia@company.com', 'Maria', 'Garcia', true, 'https://via.placeholder.com/150'),
+    ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'alex.wong@company.com', 'Alex', 'Wong', true, 'https://via.placeholder.com/150'),
+    ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'lisa.johnson@company.com', 'Lisa', 'Johnson', true, 'https://via.placeholder.com/150'),
+    ('ffffffff-ffff-ffff-ffff-ffffffffffff', 'james.wilson@company.com', 'James', 'Wilson', false, 'https://via.placeholder.com/150');
 
 -- Populate Teams
 INSERT INTO teams (id, name, manager_id) VALUES

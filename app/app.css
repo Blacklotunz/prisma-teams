@@ -41,7 +41,7 @@ select {
     0 1px 2px hsla(0, 0%, 0%, 0.2);
   background-color: white;
   line-height: 1.5;
-  margin: 0;
+  margin: 2px;
 }
 button {
   color: #3992ff;

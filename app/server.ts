@@ -31,3 +31,11 @@ process.on('SIGINT', async () => {
     await closePool();
     process.exit(0);
 });
+
+export function handleError(error: Error) {
+    console.error("wowowo: "+error);
+    return {
+        message: error.message,
+        stack: error.stack,
+    };
+}
