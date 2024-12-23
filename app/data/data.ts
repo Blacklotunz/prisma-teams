@@ -138,18 +138,14 @@ export async function updateTeam(team: UpdateTeam): Promise<boolean> {
   const connection = await pool.connect();
   let toReturn = false;
   try{
-    await connection.query('BEGIN;');
     const result = await connection.query('UPDATE teams SET name = $1, manager_id = $2 WHERE id = $3;', [team.name, team.manager_id, team.id]);
     if (result.rowCount == 1) {
       toReturn = true;
-      await connection.query('COMMIT;');
     }else{
       toReturn = false;
-      await connection.query('ROLLBACK;');
     }
   } catch (error) {
     console.error(error);
-    await connection.query('ROLLBACK;');
   } finally {
     connection.release();
   }
@@ -191,73 +187,16 @@ export async function updateTeamMembers(currentTeamId: string, newTeamId: string
   const connection = await pool.connect();
   let toReturn = false;
   try{
-    await connection.query('BEGIN;');
     const result = await connection.query('UPDATE team_members SET team_id = $1 WHERE team_id = $2 AND member_id = $3;', [newTeamId, currentTeamId, member.member_id]);
     if (result.rowCount == 1) {
       toReturn = true;
-      await connection.query('COMMIT;');
     }else{
       toReturn = false;
-      await connection.query('ROLLBACK;');
     }
   } catch (error) {
     console.error(error);
-    await connection.query('ROLLBACK;');
   } finally {
     connection.release();
   }
   return toReturn;
 }
-
-type ContactMutation = {
-  id?: string;
-  first?: string;
-  last?: string;
-  avatar?: string;
-  twitter?: string;
-  notes?: string;
-  favorite?: boolean;
-};
-
-export type ContactRecord = ContactMutation & {
-  id: string;
-  createdAt: string;
-};
-
-////////////////////////////////////////////////////////////////////////////////
-// This is just a fake DB table. In a real app you'd be talking to a real db or
-// fetching from an existing API.
-const fakeContacts = {
-  records: {} as Record<string, ContactRecord>,
-
-  async getAll(): Promise<ContactRecord[]> {
-    return Object.keys(fakeContacts.records)
-      .map((key) => fakeContacts.records[key])
-      .sort(sortBy("-createdAt", "last"));
-  },
-
-  async get(id: string): Promise<ContactRecord | null> {
-    return fakeContacts.records[id] || null;
-  },
-
-  async create(values: ContactMutation): Promise<ContactRecord> {
-    const id = values.id || Math.random().toString(36).substring(2, 9);
-    const createdAt = new Date().toISOString();
-    const newContact = { id, createdAt, ...values };
-    fakeContacts.records[id] = newContact;
-    return newContact;
-  },
-
-  async set(id: string, values: ContactMutation): Promise<ContactRecord> {
-    const contact = await fakeContacts.get(id);
-    invariant(contact, `No contact found for ${id}`);
-    const updatedContact = { ...contact, ...values };
-    fakeContacts.records[id] = updatedContact;
-    return updatedContact;
-  },
-
-  destroy(id: string): null {
-    delete fakeContacts.records[id];
-    return null;
-  },
-};
